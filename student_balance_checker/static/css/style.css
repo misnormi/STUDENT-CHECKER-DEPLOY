@@ -1,0 +1,285 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #1a4d3a; /* Dark green background */
+    color: white;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.signin-btn {
+    background-color: #6c757d;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.signin-btn:hover {
+    background-color: #5a6268;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0 40px;
+    text-align: center;
+}
+
+.tap-text {
+    font-size: 3.5rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 40px;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+    letter-spacing: 2px;
+}
+
+/* ID Input Container */
+.id-input-container {
+    margin-bottom: 40px;
+    width: 100%;
+    max-width: 500px;
+}
+
+.id-input {
+    width: 100%;
+    height: 60px;
+    background-color: #6c757d;
+    border: none;
+    border-radius: 8px;
+    padding: 0 20px;
+    font-size: 1.5rem;
+    color: white;
+    text-align: center;
+    outline: none;
+    transition: background-color 0.3s ease;
+}
+
+.id-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.id-input:focus {
+    background-color: #5a6268;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+/* Tap Circle */
+.tap-circle {
+    width: 200px;
+    height: 200px;
+    background-color: #6c757d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 40px;
+}
+
+.tap-circle:hover {
+    background-color: #5a6268;
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+}
+
+.tap-circle:active {
+    transform: scale(0.95);
+}
+
+.tap-icon {
+    font-size: 4rem;
+    opacity: 0.8;
+}
+
+/* Results Display */
+.results {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 400px;
+    width: 100%;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.student-info h3 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+.student-id {
+    font-size: 1.2rem;
+    color: #ccc;
+    margin-bottom: 10px;
+}
+
+.balance {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #4CAF50;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Sign In Page Styles */
+.signin-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    text-align: center;
+}
+
+.signin-title {
+    font-size: 2.5rem;
+    margin: 30px 0;
+    color: white;
+}
+
+.signin-form {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 40px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    min-width: 300px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    outline: none;
+}
+
+.form-group input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.signin-submit {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.signin-submit:hover {
+    background-color: #45a049;
+}
+
+.back-link {
+    color: #ccc;
+    text-decoration: none;
+    margin-top: 20px;
+    display: inline-block;
+    transition: color 0.3s ease;
+}
+
+.back-link:hover {
+    color: white;
+}
+
+.messages {
+    margin-top: 20px;
+}
+
+.message {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.message.error {
+    background-color: rgba(220, 53, 69, 0.3);
+    color: #f8d7da;
+    border: 1px solid rgba(220, 53, 69, 0.5);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .tap-text {
+        font-size: 2.5rem;
+    }
+    
+    .tap-circle {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .tap-icon {
+        font-size: 3rem;
+    }
+    
+    .header {
+        padding: 15px 20px;
+    }
+    
+    .title {
+        font-size: 1.5rem;
+    }
+    
+    .main-content {
+        padding: 0 20px;
+    }
+}

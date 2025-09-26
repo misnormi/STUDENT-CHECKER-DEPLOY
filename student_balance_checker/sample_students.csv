@@ -1,0 +1,6 @@
+student_id,fullname,rfid_number,course,balance
+STU009,Alice Johnson,RFID123460,Computer Science,1500.75
+STU010,Bob Wilson,RFID123461,Engineering,2500.50
+STU011,Carol Martinez,RFID123462,Psychology,3200.25
+STU012,Daniel Thompson,RFID123463,Mathematics,950.00
+STU013,Eva Garcia,RFID123464,Biology,2750.80

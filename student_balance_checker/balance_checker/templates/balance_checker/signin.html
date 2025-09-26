@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - Student Balance Checker</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/modern-theme.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .signin-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .signin-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="%23ffffff" stop-opacity="0.1"/><stop offset="100%" stop-color="%23ffffff" stop-opacity="0"/></radialGradient></defs><circle cx="200" cy="200" r="100" fill="url(%23a)"/><circle cx="800" cy="300" r="150" fill="url(%23a)"/><circle cx="400" cy="700" r="120" fill="url(%23a)"/><circle cx="900" cy="800" r="80" fill="url(%23a)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .signin-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 400px;
+            padding: var(--space-8);
+        }
+        
+        .signin-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-10);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+        
+        .signin-header {
+            margin-bottom: var(--space-8);
+        }
+        
+        .signin-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+        
+        .signin-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: var(--space-2);
+        }
+        
+        .signin-form {
+            text-align: left;
+        }
+        
+        .form-group {
+            margin-bottom: var(--space-6);
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: var(--space-4);
+            font-size: 1rem;
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            background: white;
+            color: var(--text-primary);
+            transition: all var(--transition-normal);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .form-group input::placeholder {
+            color: var(--text-tertiary);
+        }
+        
+        .signin-submit {
+            width: 100%;
+            padding: var(--space-4);
+            font-size: 1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+            margin-bottom: var(--space-6);
+        }
+        
+        .signin-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+        
+        .signin-submit:active {
+            transform: translateY(0);
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all var(--transition-normal);
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-md);
+        }
+        
+        .back-link:hover {
+            color: var(--primary-color);
+            background: rgba(59, 130, 246, 0.1);
+            text-decoration: none;
+        }
+        
+        .back-link svg {
+            margin-right: var(--space-2);
+        }
+        
+        .messages {
+            margin-top: var(--space-6);
+        }
+        
+        .message {
+            padding: var(--space-4);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-3);
+            font-weight: 500;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .message.error {
+            background: #fee2e2;
+            color: var(--error-color);
+            border: 1px solid #fecaca;
+        }
+        
+        .message.success {
+            background: var(--secondary-50);
+            color: var(--secondary-color);
+            border: 1px solid var(--secondary-100);
+        }
+        
+        .message.warning {
+            background: #fef3c7;
+            color: var(--warning-color);
+            border: 1px solid #fde68a;
+        }
+        
+        .message.info {
+            background: var(--primary-50);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-100);
+        }
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            border-radius: var(--radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-6);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+        }
+        
+        .logo svg {
+            width: 32px;
+            height: 32px;
+            color: white;
+        }
+        
+        @media (max-width: 480px) {
+            .signin-container {
+                padding: var(--space-4);
+            }
+            
+            .signin-card {
+                padding: var(--space-6);
+            }
+            
+            .signin-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="signin-page">
+        <div class="signin-container">
+            <div class="signin-card">
+                <div class="signin-header">
+                    <div class="logo">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 12l2 2 4-4"></path>
+                            <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"></path>
+                            <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"></path>
+                            <path d="M12 3c0 1-1 3-3 3s-3-2-3-3 1-3 3-3 3 2 3 3"></path>
+                            <path d="M12 21c0-1 1-3 3-3s3 2 3 3-1 3-3 3-3-2-3-3"></path>
+                        </svg>
+                    </div>
+                    <h1 class="signin-title">Admin Portal</h1>
+                    <p class="signin-subtitle">Student Balance Checker</p>
+                </div>
+                
+                <form method="post" class="signin-form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" name="username" placeholder="Username" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="signin-submit">Sign In</button>
+                </form>
+                
+                <a href="{% url 'home' %}" class="back-link">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 12H5"></path>
+                        <path d="M12 19l-7-7 7-7"></path>
+                    </svg>
+                    Back to Balance Checker
+                </a>
+                
+                {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                            <div class="message {{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

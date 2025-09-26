@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import Data - Student Balance Checker</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/modern-theme.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .dashboard-container {
+            min-height: 100vh;
+            background: var(--bg-secondary);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--border-light);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-4) var(--space-6);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
+        
+        .logo svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+        
+        .brand-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-2) var(--space-4);
+            background: var(--gray-50);
+            border-radius: var(--radius-full);
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--secondary-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-4);
+            background: var(--error-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-decoration: none;
+        }
+        
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .main-layout {
+            display: flex;
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid var(--border-light);
+            padding: var(--space-6);
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 73px;
+            height: calc(100vh - 73px);
+            overflow-y: auto;
+        }
+        
+        .nav-section {
+            margin-bottom: var(--space-8);
+        }
+        
+        .nav-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: var(--space-4);
+        }
+        
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-1);
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-lg);
+            font-weight: 500;
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+        
+        .nav-item:hover {
+            background: var(--gray-50);
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        .nav-item.active {
+            background: var(--primary-50);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 20px;
+            background: var(--primary-color);
+            border-radius: 0 2px 2px 0;
+        }
+        
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: var(--space-8);
+            background: var(--bg-secondary);
+            min-height: calc(100vh - 73px);
+        }
+        
+        .content-header {
+            margin-bottom: var(--space-8);
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+        
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+        
+        .import-container {
+            max-width: 800px;
+        }
+        
+        .messages-container {
+            margin-bottom: var(--space-6);
+        }
+        
+        .message {
+            padding: var(--space-4);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-3);
+            font-weight: 500;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .message.success {
+            background: var(--secondary-50);
+            color: var(--secondary-color);
+            border: 1px solid var(--secondary-100);
+        }
+        
+        .message.error {
+            background: #fee2e2;
+            color: var(--error-color);
+            border: 1px solid #fecaca;
+        }
+        
+        .message.warning {
+            background: #fef3c7;
+            color: var(--warning-color);
+            border: 1px solid #fde68a;
+        }
+        
+        .message.info {
+            background: var(--primary-50);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-100);
+        }
+        
+        .import-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            padding: var(--space-8);
+            margin-bottom: var(--space-6);
+        }
+        
+        .import-card h3 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            margin-bottom: var(--space-4);
+            font-weight: 600;
+        }
+        
+        .import-card p {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-8);
+            line-height: 1.6;
+        }
+        
+        .import-form {
+            margin-bottom: var(--space-8);
+        }
+        
+        .form-group {
+            margin-bottom: var(--space-6);
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: var(--space-2);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-input {
+            width: 100%;
+            padding: var(--space-4);
+            border: 2px dashed var(--border-medium);
+            border-radius: var(--radius-lg);
+            background-color: var(--gray-50);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-align: center;
+            font-size: 1rem;
+        }
+        
+        .file-input:hover {
+            border-color: var(--primary-color);
+            background-color: var(--primary-50);
+        }
+        
+        .file-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .import-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: var(--space-4) var(--space-8);
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
+        
+        .import-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+        
+        .import-btn:active {
+            transform: translateY(0);
+        }
+        
+        .import-info {
+            background: var(--gray-50);
+            padding: var(--space-6);
+            border-radius: var(--radius-lg);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .import-info h4 {
+            color: var(--text-primary);
+            margin-bottom: var(--space-4);
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+        
+        .import-info ul {
+            list-style-type: disc;
+            padding-left: var(--space-5);
+            color: var(--text-secondary);
+        }
+        
+        .import-info li {
+            margin-bottom: var(--space-2);
+            line-height: 1.5;
+        }
+        
+        .csv-preview {
+            background: var(--gray-50);
+            padding: var(--space-4);
+            border-radius: var(--radius-md);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            overflow-x: auto;
+            border: 1px solid var(--border-light);
+        }
+        
+        @media (max-width: 1024px) {
+            .main-layout {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-right: none;
+                border-bottom: 1px solid var(--border-light);
+            }
+            
+            .nav-menu {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: var(--space-2);
+            }
+            
+            .nav-item {
+                white-space: nowrap;
+                min-width: fit-content;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                padding: var(--space-3) var(--space-4);
+            }
+            
+            .main-content {
+                padding: var(--space-4);
+            }
+            
+            .import-card {
+                padding: var(--space-6);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 12l2 2 4-4"></path>
+                            <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"></path>
+                            <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"></path>
+                            <path d="M12 3c0 1-1 3-3 3s-3-2-3-3 1-3 3-3 3 2 3 3"></path>
+                            <path d="M12 21c0-1 1-3 3-3s3 2 3 3-1 3-3 3-3-2-3-3"></path>
+                        </svg>
+                    </div>
+                    <div class="brand-text">Student Balance Checker</div>
+                </div>
+                
+                <div class="user-section">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            {{ user.first_name|default:user.username|first|upper }}
+                        </div>
+                        <span>Hi {{ user.first_name|default:user.username }}</span>
+                    </div>
+                    <a href="{% url 'signout' %}" class="logout-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16,17 21,12 16,7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-layout">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="nav-section">
+                    <div class="nav-title">Main Menu</div>
+                    <nav class="nav-menu">
+                        <a href="{% url 'student_list' %}" class="nav-item">
+                            <div class="nav-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                </svg>
+                            </div>
+                            Student List
+                        </a>
+                        <a href="{% url 'import_data' %}" class="nav-item active">
+                            <div class="nav-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7,10 12,15 17,10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                            </div>
+                            Import Data
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <div class="content-header">
+                    <h1 class="page-title">Import Student Data</h1>
+                    <p class="page-subtitle">Bulk import students from CSV files</p>
+                </div>
+                
+                <div class="import-container">
+                    <!-- Messages -->
+                    {% if messages %}
+                        <div class="messages-container">
+                            {% for message in messages %}
+                                <div class="message {{ message.tags }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="import-card">
+                        <h3>📁 Upload Student Data</h3>
+                        <p>Upload a CSV file containing student information to bulk import students into the system. This will help you quickly add multiple students at once.</p>
+                        
+                        <form method="post" enctype="multipart/form-data" class="import-form">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="csv_file">Select CSV File</label>
+                                <div class="file-input-wrapper">
+                                    <input type="file" id="csv_file" name="csv_file" accept=".csv" required class="file-input">
+                                </div>
+                            </div>
+                            <button type="submit" class="import-btn">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7,10 12,15 17,10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                Import Data
+                            </button>
+                        </form>
+                        
+                        <div class="import-info">
+                            <h4>📋 CSV Format Requirements</h4>
+                            <ul>
+                                <li><strong>Required columns:</strong> student_id, first_name, last_name</li>
+                                <li><strong>Optional columns:</strong> rfid_number, course, balance</li>
+                                <li>RFID number is used for tap ID purposes (e.g., card scanning)</li>
+                                <li>Balance should be in decimal format (e.g., 150.50)</li>
+                                <li>Course field is optional</li>
+                                <li>Balance will be displayed in Philippine Peso (₱) with comma formatting</li>
+                                <li>Make sure your CSV file uses UTF-8 encoding (or Latin-1/Windows-1252 for older files)</li>
+                                <li>If you get encoding errors, try saving your CSV file as UTF-8 in Excel or your text editor</li>
+                            </ul>
+                            
+                            <h4>📄 Sample CSV Format</h4>
+                            <div class="csv-preview">
+student_id,first_name,last_name,rfid_number,course,balance
+STU001,John,Doe,RFID123456,Computer Science,1500.50
+STU002,Jane,Smith,RFID123457,Business Administration,2500.00
+STU003,Mike,Johnson,RFID123458,Engineering,750.25
+STU004,Sarah,Wilson,RFID123459,Medicine,3200.75
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

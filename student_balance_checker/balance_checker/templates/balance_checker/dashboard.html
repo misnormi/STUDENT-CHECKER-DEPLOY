@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Student Balance Checker</title>
+    {% load static %}
+    {% load currency_filters %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Top Header -->
+        <div class="header">
+            <div class="header-line"></div>
+            <div class="header-bar">
+                <div class="user-info">
+                    Hi {{ user.first_name|default:user.username }}
+                </div>
+            </div>
+        </div>
+
+        <div class="main-layout">
+            <!-- Left Navigation Sidebar -->
+            <div class="sidebar">
+                <div class="nav-header">
+                    <h2>Navigation</h2>
+                </div>
+                <nav class="nav-menu">
+                    <a href="{% url 'student_list' %}" class="nav-item active">
+                        Student list
+                    </a>
+                    <a href="{% url 'import_data' %}" class="nav-item">
+                        Import Data
+                    </a>
+                </nav>
+                <div class="nav-footer">
+                    <a href="{% url 'signout' %}" class="logout-link">Logout</a>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="main-content">
+                <div class="content-header">
+                    <h1>Student list</h1>
+                    <p class="student-count">Showing {{ students|length }} of {{ total_students }} students</p>
+                </div>
+                
+                <!-- Search and Filter Controls -->
+                <div class="controls-container">
+                    <form method="get" class="search-form">
+                        <div class="search-group">
+                            <input type="text" 
+                                   name="search" 
+                                   placeholder="Search students..." 
+                                   value="{{ search_query }}"
+                                   class="search-input">
+                            <button type="submit" class="search-btn">🔍</button>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <select name="course" class="filter-select">
+                                <option value="">All Courses</option>
+                                {% for course in courses %}
+                                    <option value="{{ course }}" {% if course_filter == course %}selected{% endif %}>
+                                        {{ course }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            
+                            <select name="status" class="filter-select">
+                                <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active Only</option>
+                                <option value="inactive" {% if status_filter == 'inactive' %}selected{% endif %}>Inactive Only</option>
+                                <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Students</option>
+                            </select>
+                            
+                            <select name="per_page" class="filter-select">
+                                <option value="10" {% if per_page == 10 %}selected{% endif %}>10 per page</option>
+                                <option value="20" {% if per_page == 20 %}selected{% endif %}>20 per page</option>
+                                <option value="50" {% if per_page == 50 %}selected{% endif %}>50 per page</option>
+                                <option value="100" {% if per_page == 100 %}selected{% endif %}>100 per page</option>
+                            </select>
+                            
+                            <button type="submit" class="filter-btn">Apply Filters</button>
+                            <a href="{% url 'student_list' %}" class="clear-btn">Clear</a>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="table-container">
+                    <table class="student-table">
+                        <thead>
+                            <tr>
+                                <th>Fullname</th>
+                                <th>Course</th>
+                                <th>Balance</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in students %}
+                            <tr data-student-id="{{ student.student_id }}">
+                                <td>{{ student.first_name }} {{ student.last_name }}</td>
+                                <td>{{ student.course|default:"N/A" }}</td>
+                                <td class="balance-cell">
+                                    <span class="balance-display">{{ student.balance|peso_format }}</span>
+                                    <input type="number" 
+                                           class="balance-input" 
+                                           value="{{ student.balance|peso_format_no_symbol }}" 
+                                           step="0.01" 
+                                           min="0" 
+                                           style="display: none;"
+                                           data-original-value="{{ student.balance|peso_format_no_symbol }}">
+                                    <div class="balance-actions" style="display: none;">
+                                        <button class="save-btn" title="Save">✓</button>
+                                        <button class="cancel-btn" title="Cancel">✗</button>
+                                    </div>
+                                </td>
+                                <td class="actions-cell">
+                                    <button class="delete-btn" 
+                                            title="Delete Student" 
+                                            data-student-id="{{ student.student_id }}"
+                                            data-student-name="{{ student.first_name }} {{ student.last_name }}">
+                                        🗑️
+                                    </button>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="no-data">No students found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination Controls -->
+                {% if students.has_other_pages %}
+                <div class="pagination-container">
+                    <div class="pagination-info">
+                        <span>Page {{ students.number }} of {{ students.paginator.num_pages }}</span>
+                        <span>Showing {{ students.start_index }}-{{ students.end_index }} of {{ students.paginator.count }} students</span>
+                    </div>
+                    
+                    <div class="pagination">
+                        {% if students.has_previous %}
+                            <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if course_filter %}&course={{ course_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if per_page %}&per_page={{ per_page }}{% endif %}" class="page-link">« First</a>
+                            <a href="?page={{ students.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if course_filter %}&course={{ course_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if per_page %}&per_page={{ per_page }}{% endif %}" class="page-link">‹ Previous</a>
+                        {% endif %}
+                        
+                        {% for num in students.paginator.page_range %}
+                            {% if students.number == num %}
+                                <span class="page-link current">{{ num }}</span>
+                            {% elif num > students.number|add:'-3' and num < students.number|add:'3' %}
+                                <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if course_filter %}&course={{ course_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if per_page %}&per_page={{ per_page }}{% endif %}" class="page-link">{{ num }}</a>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if students.has_next %}
+                            <a href="?page={{ students.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if course_filter %}&course={{ course_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if per_page %}&per_page={{ per_page }}{% endif %}" class="page-link">Next ›</a>
+                            <a href="?page={{ students.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if course_filter %}&course={{ course_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if per_page %}&per_page={{ per_page }}{% endif %}" class="page-link">Last »</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/dashboard.js' %}"></script>
+</body>
+</html>
